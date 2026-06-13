@@ -888,8 +888,15 @@
       try {
         scenes = JSON.parse(localStorage.getItem('mesarpg_scenes') || '[]');
         if (!Array.isArray(scenes)) scenes = [];
-        // Ensure every scene has tokens array
-        scenes.forEach(s => { if (!s.tokens) s.tokens = []; });
+        // Ensure every scene has tokens array + migrate backgroundId
+        scenes.forEach(s => {
+          if (!s.tokens) s.tokens = [];
+          if (!s.backgroundId) {
+            const match = (s.background || '').match(/backgrounds\/(\d{3})\.jpg/);
+            s.backgroundId = match ? match[1] : '001';
+            if (!s.background) s.background = `backgrounds/${s.backgroundId}.jpg`;
+          }
+        });
       } catch { scenes = []; }
 
       try {
@@ -950,6 +957,11 @@
           scene.background = urlInput;
           scene.displayUrl = urlInput;
           backgroundUrl = urlInput;
+
+          // Try to sync backgroundId from the path for the editor
+          const match = urlInput.match(/(\d{3})\.jpg/);
+          if (match) scene.backgroundId = match[1];
+
           saveScenes();
           refreshMapVisual();
           showToast('Fundo da cena atualizado!');
@@ -1008,7 +1020,7 @@
         const safeName = (scene.name || 'cena').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
         offerDownloadImage(dataUrl, `fundo-${safeName || 'cena'}.jpg`);
 
-        showToast('Fundo aplicado! (Para GitHub: use "Salvar como" na imagem baixada, coloque na pasta backgrounds/ do repo, commit e use o caminho relativo)');
+        showToast('Fundo aplicado via upload local (dataUrl). Para GitHub use a pasta backgrounds/ + editor de ID.');
       };
 
       reader.readAsDataURL(file);
@@ -1336,18 +1348,10 @@
       return scenes.find(s => s.id === currentSceneId) || null;
     }
 
-    // Pool of AI-generated backgrounds.
-    // These files live in the "backgrounds/" folder.
-    // When you host on GitHub Pages, relative paths work perfectly after you commit/push the folder.
-    // On "Criar nova cena" we automatically assign one (cycling through the list).
-    const DEFAULT_AI_BACKGROUNDS = [
-      'backgrounds/arcane-ritual-chamber.jpg',
-      'backgrounds/enchanted-forest-ritual.jpg',
-      'backgrounds/ruined-cathedral.jpg',
-      'backgrounds/crystal-cavern.jpg',
-      'backgrounds/grand-occult-hall.jpg',
-      'backgrounds/foggy-urban-mage-street.jpg'
-    ];
+    // Backgrounds are now managed by 3-digit numeric IDs (001, 002, ...).
+    // Place files named 001.jpg, 002.jpg etc. inside the "backgrounds/" folder in the repo.
+    // New scenes always start with ID 001.
+    // Master can change the ID per scene using the editor in the scene list.
 
     function createNewScene(name = null) {
       if (currentRole !== 'mestre') return;
@@ -1355,22 +1359,42 @@
       const newScene = {
         id: 'scene-' + Date.now(),
         name: sceneName,
-        background: '',
+        backgroundId: '001',
+        background: 'backgrounds/001.jpg',
         tokens: []
       };
-
-      // Auto-assign the next AI-generated background from the project folder (cycles through the pool).
-      // This way every new scene you create already comes with a beautiful thematic fundo that appears
-      // immediately inside the yellow frame in the correct place.
-      if (DEFAULT_AI_BACKGROUNDS.length > 0) {
-        const idx = scenes.length % DEFAULT_AI_BACKGROUNDS.length;
-        newScene.background = DEFAULT_AI_BACKGROUNDS[idx];
-      }
 
       scenes.push(newScene);
       saveScenes();
       selectScene(newScene.id);
       renderSceneList();
+    }
+
+    function getSceneBackgroundId(scene) {
+      if (scene.backgroundId) return scene.backgroundId;
+      if (scene.background) {
+        const match = scene.background.match(/backgrounds\/(\d{3})\.jpg/);
+        if (match) return match[1];
+      }
+      return '001';
+    }
+
+    function updateSceneBackgroundId(sceneId, rawId) {
+      const scene = scenes.find(s => s.id === sceneId);
+      if (!scene || currentRole !== 'mestre') return;
+
+      let id = String(rawId || '').trim().replace(/\D/g, '').padStart(3, '0');
+      if (!id || id === '000') id = '001';
+
+      scene.backgroundId = id;
+      scene.background = `backgrounds/${id}.jpg`;
+      saveScenes();
+
+      if (currentSceneId === sceneId) {
+        refreshMapVisual();
+      }
+      renderSceneList();
+      showToast(`Fundo atualizado para ID ${id}`);
     }
 
     function deleteCurrentScene() {
@@ -1409,6 +1433,9 @@
       currentSceneId = sceneId;
       const scene = getCurrentScene();
       if (scene) {
+        if (!scene.background && scene.backgroundId) {
+          scene.background = `backgrounds/${scene.backgroundId}.jpg`;
+        }
         backgroundUrl = scene.background || '';
         tokens = scene.tokens || [];
       }
@@ -1479,12 +1506,24 @@
           .filter(([p, sid]) => sid === scene.id)
           .map(([p]) => p);
 
+        const currentBgId = getSceneBackgroundId(scene);
+
         html += `
           <div onclick="selectScene('${scene.id}')" 
                class="px-3 py-2 rounded-xl cursor-pointer flex items-center justify-between text-sm mb-1 ${isActive ? 'bg-violet-800/70 border border-violet-600' : 'hover:bg-zinc-800 bg-zinc-900 border border-zinc-700'}">
             <div class="flex-1">
               <span class="font-semibold">${scene.name}</span>
               <span class="text-[10px] text-zinc-400 ml-2">(${scene.tokens.length} tokens)</span>
+
+              <div class="mt-1 flex items-center gap-1 text-[10px]" onclick="event.stopImmediatePropagation()">
+                <span class="text-zinc-400">ID:</span>
+                <input type="text" maxlength="3" value="${currentBgId}" 
+                       class="w-10 bg-zinc-950 border border-zinc-700 rounded px-1 text-center font-mono"
+                       id="bgid-input-${scene.id}"
+                       onkeydown="if (event.key === 'Enter') { updateSceneBackgroundId('${scene.id}', this.value); }">
+                <button onclick="event.stopImmediatePropagation(); updateSceneBackgroundId('${scene.id}', document.getElementById('bgid-input-${scene.id}').value);" 
+                        class="px-1.5 py-0 bg-emerald-700 hover:bg-emerald-600 rounded text-[9px]">Atualizar</button>
+              </div>
             </div>
             <div class="flex items-center gap-1">
               <span class="text-[10px] text-emerald-400">${playersInScene.length} jogadores</span>
