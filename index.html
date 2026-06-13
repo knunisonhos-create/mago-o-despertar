@@ -1371,6 +1371,7 @@
         name: sceneName,
         backgroundId: '001',
         background: 'backgrounds/001.jpg',
+        zoom: 1,
         tokens: []
       };
 
@@ -1387,6 +1388,10 @@
         if (match) return match[1];
       }
       return '001';
+    }
+
+    function getSceneZoom(scene) {
+      return scene && scene.zoom ? scene.zoom : 1;
     }
 
     function updateSceneBackgroundId(sceneId, rawId) {
@@ -1453,6 +1458,13 @@
       renderSceneList();
       renderTokenList();
       updateSelectedInfo();
+
+      // Update zoom display (from scene.zoom)
+      const levelEl = document.getElementById('zoom-level');
+      if (levelEl) {
+        const sc = getCurrentScene();
+        levelEl.textContent = Math.round(getSceneZoom(sc) * 100) + '%';
+      }
     }
 
     function assignPlayerToCurrentScene(playerName, dropX = 200, dropY = 200) {
@@ -1519,25 +1531,25 @@
         const currentBgId = getSceneBackgroundId(scene);
 
         html += `
-          <div onclick="selectScene('${scene.id}')" 
-               class="px-3 py-2 rounded-xl cursor-pointer flex items-center justify-between text-sm mb-1 ${isActive ? 'bg-violet-800/70 border border-violet-600' : 'hover:bg-zinc-800 bg-zinc-900 border border-zinc-700'}">
-            <div class="flex-1">
+          <div class="px-3 py-2 rounded-xl cursor-pointer flex items-center justify-between text-sm mb-1 ${isActive ? 'bg-violet-800/70 border border-violet-600' : 'hover:bg-zinc-800 bg-zinc-900 border border-zinc-700'}">
+            <div onclick="selectScene('${scene.id}')" class="flex-1">
               <span class="font-semibold">${scene.name}</span>
               <span class="text-[10px] text-zinc-400 ml-2">(${scene.tokens.length} tokens)</span>
-
-              <div class="mt-1 flex items-center gap-1 text-[10px]" onclick="event.stopImmediatePropagation()">
-                <span class="text-zinc-400">ID:</span>
-                <input type="text" maxlength="3" value="${currentBgId}" 
-                       class="w-10 bg-zinc-950 border border-zinc-700 rounded px-1 text-center font-mono"
-                       id="bgid-input-${scene.id}"
-                       onmousedown="event.stopImmediatePropagation();"
-                       onclick="event.stopImmediatePropagation(); this.focus(); this.select();"
-                       onkeydown="if (event.key === 'Enter') { updateSceneBackgroundId('${scene.id}', this.value); }">
-                <button onclick="event.stopImmediatePropagation(); updateSceneBackgroundId('${scene.id}', document.getElementById('bgid-input-${scene.id}').value);" 
-                        class="px-1.5 py-0 bg-emerald-700 hover:bg-emerald-600 rounded text-[9px]">Atualizar</button>
-              </div>
             </div>
-            <div class="flex items-center gap-1">
+
+            <div class="id-editor mt-1 flex items-center gap-1 text-[10px]" onclick="event.stopImmediatePropagation()">
+              <span class="text-zinc-400">ID:</span>
+              <input type="text" maxlength="3" value="${currentBgId}" 
+                     class="w-10 bg-zinc-950 border border-zinc-700 rounded px-1 text-center font-mono"
+                     id="bgid-input-${scene.id}"
+                     onmousedown="event.stopImmediatePropagation();"
+                     onclick="event.stopImmediatePropagation(); this.focus(); this.select();"
+                     onkeydown="if (event.key === 'Enter') { updateSceneBackgroundId('${scene.id}', this.value); }">
+              <button onclick="event.stopImmediatePropagation(); updateSceneBackgroundId('${scene.id}', document.getElementById('bgid-input-${scene.id}').value);" 
+                      class="px-1.5 py-0 bg-emerald-700 hover:bg-emerald-600 rounded text-[9px]">Atualizar</button>
+            </div>
+
+            <div class="flex items-center gap-1 ml-2">
               <span class="text-[10px] text-emerald-400">${playersInScene.length} jogadores</span>
               <button onclick="event.stopImmediatePropagation(); deleteSceneById('${scene.id}');" 
                       class="text-red-400 hover:text-red-600 px-1 text-xs">✕</button>
@@ -4939,20 +4951,33 @@
       updateRangeValues();
     }
 
-    let currentZoom = 1;
-
-    function applyCurrentFrameTransform() {
+    function applySceneZoom(scene) {
+      if (!scene) return;
       const frame = document.getElementById('scene-frame');
       if (!frame) return;
-      frame.style.transform = `translate(-50%, -50%) scale(${currentZoom})`;
+
+      // Zoom only the background image, not the tokens
+      const bgEl = frame.querySelector('#scene-image') || frame.querySelector('.scene-custom-bg');
+      if (!bgEl) return;
+
+      const z = getSceneZoom(scene);
+      bgEl.style.transform = `scale(${z})`;
+      bgEl.style.transformOrigin = 'center center';
     }
 
-    function updateMapZoom(newZoom) {
-      currentZoom = Math.max(0.5, Math.min(4, newZoom));
-      applyCurrentFrameTransform();
+    function updateSceneZoom(delta) {
+      if (currentRole !== 'mestre' || !currentSceneId) return;
+      const scene = getCurrentScene();
+      if (!scene) return;
+
+      const current = getSceneZoom(scene);
+      scene.zoom = Math.max(0.5, Math.min(4, current + delta));
+      saveScenes();
+
+      applySceneZoom(scene);
 
       const levelEl = document.getElementById('zoom-level');
-      if (levelEl) levelEl.textContent = Math.round(currentZoom * 100) + '%';
+      if (levelEl) levelEl.textContent = Math.round(scene.zoom * 100) + '%';
     }
 
     function initZoomControls() {
@@ -4967,12 +4992,13 @@
       controls.classList.toggle('hidden', !show);
       controls.style.display = show ? 'flex' : 'none';
 
-      zoomOut.onclick = () => updateMapZoom(currentZoom - 0.25);
-      zoomIn.onclick = () => updateMapZoom(currentZoom + 0.25);
+      zoomOut.onclick = () => updateSceneZoom(-0.25);
+      zoomIn.onclick = () => updateSceneZoom(0.25);
 
-      // initial level
+      // set initial level from current scene
       const levelEl = document.getElementById('zoom-level');
-      if (levelEl) levelEl.textContent = Math.round(currentZoom * 100) + '%';
+      const scene = getCurrentScene();
+      if (levelEl) levelEl.textContent = Math.round(getSceneZoom(scene) * 100) + '%';
     }
 
     // Call this when role changes or map inits
@@ -5024,7 +5050,10 @@
         frame.appendChild(imgLayer);
       }
 
-      applyCurrentFrameTransform();
+      // Apply per-scene zoom to background only (tokens unaffected)
+      const currentSceneForZoom = getCurrentScene();
+      if (currentSceneForZoom) applySceneZoom(currentSceneForZoom);
+
       return frame;
     }
 
@@ -5082,6 +5111,9 @@
           } else {
             imgLayer.style.backgroundImage = '';
           }
+
+          // Apply zoom only to the background image (tokens stay normal size/position)
+          applySceneZoom(scene);
         } else {
           imgLayer.style.backgroundImage = '';
         }
