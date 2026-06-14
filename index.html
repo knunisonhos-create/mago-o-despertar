@@ -2366,10 +2366,10 @@
       const resolve = attrs.resolve || 1;
       const composure = attrs.composure || 1;
       const strength = attrs.strength || 1;
-      const defesa = Math.min(dex, wits);
-      const iniciativa = dex + composure;
-      const velocidade = strength + dex + 5;
-      const tamanho = 5;
+      const defesa = Math.min(char.attributes?.wits || 1, char.attributes?.composure || 1);
+      const velocidade = (char.size || 5) + (char.skills?.athletics || 0);
+      const iniciativa = (char.attributes?.dexterity || 1) + (char.attributes?.composure || 1);
+      const tamanho = char.size || 5;
 
       container.innerHTML = `
         <div class="mage-sheet rounded-lg w-full">
@@ -2552,11 +2552,8 @@
                 </div>
 
                 <!-- VANTAGENS DERIVADAS - fontes maiores -->
-                <div class="mt-3 text-lg font-semibold">
-                  Defesa: <span class="text-amber-300">${defesa}</span>
-                  &nbsp;&nbsp;Velocidade: <span class="text-amber-300">${velocidade}</span>
-                  &nbsp;&nbsp;Iniciativa: <span class="text-amber-300">${iniciativa}</span>
-                  &nbsp;&nbsp;Tamanho: <span class="text-amber-300">${tamanho}</span>
+                <div class="mt-3 text-2xl font-bold text-yellow-400">
+                Defesa: <span>${defesa}</span> &nbsp; Velocidade: <span>${velocidade}</span> &nbsp; Iniciativa: <span>${iniciativa}</span> &nbsp; Tamanho: <span>${tamanho}</span>
                 </div>
               </div>
 
