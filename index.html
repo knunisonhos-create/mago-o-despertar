@@ -2904,7 +2904,31 @@ async function saveCharacterToFirestore(character) {
       }
       return html;
     }
+async function loadAllCharactersFromFirestore() {
+  if (!isFirebaseEnabled || !firebaseDb) {
+    console.log("Firebase não disponível.");
+    return;
+  }
 
+  try {
+    const snapshot = await firebaseDb.collection("characters").get();
+    
+    allCharacters = [];
+    
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      allCharacters.push({
+        id: doc.id,
+        ...data
+      });
+    });
+
+    console.log(`${allCharacters.length} fichas carregadas do Firebase.`);
+    
+  } catch (error) {
+    console.error("Erro ao carregar fichas do Firebase:", error);
+  }
+}
     // Força de Vontade: 10 caixinhas (para X)
     function createWillpowerBoxes(states) {
       if (!Array.isArray(states) || states.length !== 10) {
