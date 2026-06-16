@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lançador de Dados • Mago: O Despertar</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap');
+
+        :root {
+            --primary: #6b4e9e;
+            --accent: #c8a2ff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, #1a1429 0%, #2c2540 100%);
+            color: #e8dff5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.35);
+            padding: 25px 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(200, 162, 255, 0.2);
+        }
+
+        h1 {
+            margin: 0;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.8em;
+            color: #c8a2ff;
+            text-shadow: 0 0 20px rgba(200, 162, 255, 0.4);
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            margin: 8px 0 0;
+            font-size: 1.05em;
+            color: #a090c0;
+            font-weight: 400;
+        }
+
+        main {
+            width: 100%;
+            max-width: 920px;
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(200, 162, 255, 0.15);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 35px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        label {
+            display: block;
+            font-size: 1.15em;
+            margin-bottom: 12px;
+            color: #d4c4ff;
+            font-weight: 500;
+        }
+
+        select {
+            font-size: 1.15em;
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: 2px solid #6b4e9e;
+            background: #2c2540;
+            color: #e8dff5;
+            margin-right: 15px;
+            min-width: 160px;
+            cursor: pointer;
+        }
+
+        button {
+            background: linear-gradient(145deg, #6b4e9e, #4a2f7a);
+            color: white;
+            border: none;
+            padding: 14px 42px;
+            font-size: 1.25em;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 18px rgba(107, 78, 158, 0.5);
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(107, 78, 158, 0.6);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #results {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(200, 162, 255, 0.12);
+            border-radius: 16px;
+            padding: 30px;
+            min-height: 280px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 1.6em;
+            color: #c8a2ff;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        #diceContainer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 22px;
+            margin-bottom: 10px;
+        }
+
+        .die-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 14px 18px 18px;
+            border-radius: 14px;
+            transition: transform 0.25s ease;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .die-wrapper:hover {
+            transform: translateY(-4px);
+        }
+
+        img.die {
+            width: 92px;
+            height: 92px;
+            border: 3px solid #8a6fc9;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5),
+                        inset 0 0 25px rgba(255, 255, 255, 0.12);
+            object-fit: contain;
+            background: #1f1a33;
+        }
+
+        .roll-value {
+            margin-top: 12px;
+            font-size: 1.55em;
+            font-weight: 700;
+            color: #f0e6ff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+            background: rgba(107, 78, 158, 0.3);
+            padding: 2px 14px;
+            border-radius: 20px;
+            min-width: 42px;
+            text-align: center;
+        }
+
+        #totalDisplay {
+            margin-top: 30px;
+            padding: 18px 30px;
+            background: linear-gradient(145deg, rgba(107, 78, 158, 0.35), rgba(74, 47, 122, 0.35));
+            border: 2px solid #6b4e9e;
+            border-radius: 12px;
+            font-size: 1.7em;
+            text-align: center;
+            font-weight: 600;
+            color: #f0e6ff;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+        }
+
+        #placeholder {
+            text-align: center;
+            color: #a090c0;
+            font-style: italic;
+            font-size: 1.1em;
+            margin: 60px 0;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 25px;
+            font-size: 0.9em;
+            color: #7a6a9c;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Mago: O Despertar</h1>
+        <p class="subtitle">Lançador de Dados D10</p>
+    </header>
+
+    <main>
+        <!-- Controles -->
+        <div class="controls">
+            <label for="numDice">Quantos dados deseja lançar?</label>
+            <select id="numDice">
+                <option value="1">1 dado</option>
+                <option value="2">2 dados</option>
+                <option value="3">3 dados</option>
+                <option value="4">4 dados</option>
+                <option value="5">5 dados</option>
+                <option value="6">6 dados</option>
+                <option value="7">7 dados</option>
+                <option value="8">8 dados</option>
+                <option value="9">9 dados</option>
+                <option value="10" selected>10 dados</option>
+            </select>
+            <button id="rollBtn" onclick="rollDice()">Lançar Dados</button>
+        </div>
+
+        <!-- Resultados -->
+        <div id="results">
+            <h2>Resultados do Lançamento</h2>
+            
+            <p id="placeholder">Selecione o número de dados e clique em “Lançar Dados” para visualizar os resultados.</p>
+            
+            <div id="diceContainer"></div>
+            
+            <div id="totalDisplay"></div>
+        </div>
+    </main>
+
+    <footer>
+        Imagens dos dados obtidas do repositório <strong>knunisonhos-create/mago-o-despertar</strong>
+    </footer>
+
+    <script>
+        // URLs das imagens D10 (1 a 10) hospedadas no GitHub
+        const diceImages = [
+            'https://raw.githubusercontent.com/knunisonhos-create/mago-o-despertar/main/dados/D10_0000_Camada-1.png',   // 1
+            'https://raw.githubusercontent.com/knunisonhos-create/mago-o-despertar/main/dados/D10_0001_Camada-2.png',   // 2
+            'https://raw.githubusercontent.com/knunisonhos-create/mago-o-despertar/main/dados/D10_0002_Camada-3.png',   // 3
+            'https://raw.githubusercontent.com/knunisonhos-create/mago-o-despertar/main/dados/D10_0003_Camada-4.png',   // 4
+            'https://raw.githubusercontent.com/knunisonhos-create/mago-o-despertar/main/dados/D10_0004_Camada-5.png',   // 5
+            'https://raw.githubusercontent.com/knunisonhos-create/mago-o-despertar/main/dados/D10_0005_Camada-6.png',   // 6
+            'https://raw.githubusercontent.com/knunisonhos-create/mago-o-despertar/main/dados/D10_0006_Camada-7.png',   // 7
+            'https://raw.githubusercontent.com/knunisonhos-create/mago-o-despertar/main/dados/D10_0007_Camada-8.png',   // 8
+            'https://raw.githubusercontent.com/knunisonhos-create/mago-o-despertar/main/dados/D10_0008_Camada-9.png',   // 9
+            'https://raw.githubusercontent.com/knunisonhos-create/mago-o-despertar/main/dados/D10_0009_Camada-10.png'   // 10
+        ];
+
+        function rollDice() {
+            const numDice = parseInt(document.getElementById('numDice').value);
+            const container = document.getElementById('diceContainer');
+            const totalDisplay = document.getElementById('totalDisplay');
+            const placeholder = document.getElementById('placeholder');
+
+            // Limpa resultados anteriores
+            container.innerHTML = '';
+            totalDisplay.innerHTML = '';
+            placeholder.style.display = 'none';
+
+            let total = 0;
+
+            for (let i = 0; i < numDice; i++) {
+                // Sorteia o resultado final deste dado (1 a 10)
+                const finalRoll = Math.floor(Math.random() * 10) + 1;
+                total += finalRoll;
+
+                // Cria o elemento visual do dado
+                const wrapper = document.createElement('div');
+                wrapper.className = 'die-wrapper';
+
+                const img = document.createElement('img');
+                img.className = 'die';
+                img.alt = `Dado mostrando ${finalRoll}`;
+
+                // Inicia com uma imagem aleatória para dar sensação de movimento
+                const startIndex = Math.floor(Math.random() * 10);
+                img.src = diceImages[startIndex];
+
+                wrapper.appendChild(img);
+                container.appendChild(wrapper);
+
+                // Animação de lançamento (muda rapidamente as faces)
+                let animationCount = 0;
+                const animInterval = setInterval(() => {
+                    animationCount++;
+                    const tempIndex = Math.floor(Math.random() * 10);
+                    img.src = diceImages[tempIndex];
+
+                    if (animationCount >= 13) { // ~910ms de animação
+                        clearInterval(animInterval);
+                        
+                        // Define a imagem final
+                        img.src = diceImages[finalRoll - 1];
+
+                        // Exibe o número sorteado abaixo da imagem
+                        const valueSpan = document.createElement('span');
+                        valueSpan.className = 'roll-value';
+                        valueSpan.textContent = finalRoll;
+                        wrapper.appendChild(valueSpan);
+
+                        // Pequeno efeito de "pop" ao finalizar
+                        wrapper.style.transform = 'scale(1.08)';
+                        setTimeout(() => {
+                            wrapper.style.transform = 'scale(1)';
+                        }, 180);
+                    }
+                }, 70);
+            }
+
+            // Exibe a soma total após a animação terminar
+            setTimeout(() => {
+                totalDisplay.innerHTML = `Soma Total: <strong>${total}</strong>`;
+            }, 950);
+        }
+
+        // Permite lançar os dados pressionando Enter no select
+        document.getElementById('numDice').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                rollDice();
+            }
+        });
+
+        // Mensagem inicial amigável (opcional)
+        console.log('%c[Lançador de Dados] Página carregada com sucesso.', 'color:#7a6a9c');
+    </script>
+</body>
+</html>
