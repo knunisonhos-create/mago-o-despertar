@@ -1450,7 +1450,27 @@ async function saveCharacterToFirestore(character) {
       selectScene(newScene.id);
       renderSceneList();
     }
+async function saveRollToFirestore(numDice, results, total) {
+  if (!isFirebaseEnabled || !firebaseDb || !currentUser) {
+    console.log("Firebase não disponível. Rolagem só local.");
+    return;
+  }
 
+  try {
+    await firebaseDb.collection("rolls").add({
+      userId: currentUser.uid,
+      userName: currentUser.displayName || currentUser.email,
+      numDice: numDice,
+      results: results,           // array com os números rolados
+      total: total,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    console.log("Rolagem enviada para o Firebase.");
+  } catch (error) {
+    console.error("Erro ao salvar rolagem:", error);
+  }
+}
     function getSceneBackgroundId(scene) {
       if (scene.backgroundId) return scene.backgroundId;
       if (scene.background) {
