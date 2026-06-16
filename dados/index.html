@@ -276,7 +276,7 @@
                             osc.frequency.value = 180 + (i * 40);
 
                             const gain = audioCtx.createGain();
-                            gain.gain.value = 0.15;
+                            gain.gain.value = 0.05;
 
                             const filter = audioCtx.createBiquadFilter();
                             filter.type = 'lowpass';
