@@ -2057,35 +2057,32 @@ function listenToLatestRolls() {
 
     // ==================== TABS ====================
     function switchTab(tab) {
-      // Hide all
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('[id^="tab-"]').forEach(t => t.classList.remove('active'));
+     function switchTab(tab) {
+    // Esconde todas as seções
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('[id^="tab-"]').forEach(t => t.classList.remove('active'));
 
-      // Show target
-      const view = document.getElementById('view-' + tab);
-      if (view) view.classList.add('active');
+    // Mostra a seção correta
+    const view = document.getElementById('view-' + tab);
+    if (view) view.classList.add('active');
 
-      const tabBtn = document.getElementById('tab-' + tab);
-      if (tabBtn) tabBtn.classList.add('active');
+    const tabBtn = document.getElementById('tab-' + tab);
+    if (tabBtn) tabBtn.classList.add('active');
 
-      currentTab = tab;
+    currentTab = tab;
 
-      // Special actions
-      if (tab === 'mesa') {
-        setTimeout(() => {
-          initMesaVTT();
-        }, 50);
-      }
-      if (tab === 'ficha') {
-        // Re-render the role-aware Mage sheet
-        setTimeout(() => {
-          if (typeof renderFichaView === 'function') renderFichaView();
-        }, 30);
-      }
-      if (tab === 'anotacoes') {
-        loadNotesIntoForm();
-      }
+    // === NOVO: Inicia o histórico de rolagens quando entrar na aba ===
+    if (tab === 'lancador') {
+        listenToLatestRolls();
     }
+
+    // Ações especiais por aba
+    if (tab === 'mesa') {
+        setTimeout(() => {
+            initMesaVTT();
+        }, 50);
+    }
+}
 
     // Old D&D character functions removed - now using Mage multi-character system above.
     // getMyCharacterSpeed kept for compatibility with map movement
