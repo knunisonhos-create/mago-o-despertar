@@ -250,10 +250,10 @@
                 const noiseFilter = audioCtx.createBiquadFilter();
                 noiseFilter.type = 'bandpass';
                 noiseFilter.frequency.value = 800;
-                noiseFilter.Q.value = 1.5;
+                noiseFilter.Q.value = 0.5;
 
                 const noiseGain = audioCtx.createGain();
-                noiseGain.gain.value = 0.15;
+                noiseGain.gain.value = 0.05;
 
                 // Envelope do ruído
                 const noiseEnv = audioCtx.createGain();
