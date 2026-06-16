@@ -1939,38 +1939,39 @@ async function saveCharacterToFirestore(character) {
       }
     }
 
-    function selectRole(role) {
-      currentRole = role;
-      const chooser = document.getElementById('role-chooser');
-      if (chooser) chooser.style.display = 'none';
+   function selectRole(role) {
+  currentRole = role;
+  const chooser = document.getElementById('role-chooser');
+  if (chooser) chooser.style.display = 'none';
 
-      // Update header to show role
-      updateHeaderRole();
+  updateHeaderRole();
 
-      // Load characters for this role
-      loadAllCharacters();
+  if (role === 'mestre') {
+    // Mestre carrega TODAS as fichas do Firebase
+    loadAllCharactersFromFirestore().then(() => {
+      console.log("Total de fichas carregadas para o Mestre:", allCharacters.length);
+      renderFichaView();
+    });
+  } else {
+    // Jogador carrega normalmente
+    loadAllCharacters();
+    renderFichaView();
 
-      // For jogador: auto-select most recent own character so it loads automatically
-      if (role === 'jogador' && !selectedCharacterId) {
-        const myChars = getMyCharacters();
-        if (myChars.length > 0) {
-          myChars.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-          selectedCharacterId = myChars[0].id;
-        }
+    // Auto-seleciona a ficha mais recente do jogador
+    if (!selectedCharacterId) {
+      const myChars = getMyCharacters();
+      if (myChars.length > 0) {
+        myChars.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+        selectedCharacterId = myChars[0].id;
       }
-
-      // Default to Mesa or Ficha depending on role? User wants to start with Ficha focus, but keep Mesa prominent.
-      switchTab('ficha');   // start on the important new ficha tab
-
-      // Seed demo characters if none exist (for testing)
-      if (allCharacters.length === 0) {
-        seedDemoMageCharacters();
-      }
-
-      // Show welcome message
-      const roleLabel = role === 'mestre' ? 'Mestre' : 'Jogador';
-      showToast(`Entrou como ${roleLabel}. A aba "Ficha de Personagem" agora se comporta de acordo com seu papel.`, 4500);
     }
+  }
+
+  switchTab('ficha');
+
+  const roleLabel = role === 'mestre' ? 'Mestre' : 'Jogador';
+  showToast(`Entrou como ${roleLabel}.`, 3000);
+}
 
     function updateHeaderRole() {
       const nameEl = document.getElementById('current-user-name');
