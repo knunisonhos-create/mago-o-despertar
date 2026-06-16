@@ -963,7 +963,28 @@
         onlinePresence = JSON.parse(localStorage.getItem('mesarpg_presence') || '{}');
       } catch { onlinePresence = {}; }
     }
+async function saveCharacterToFirestore(character) {
+  if (!isFirebaseEnabled || !firebaseDb || !currentUser) {
+    console.log("Firebase não disponível. Salvando apenas localmente.");
+    return;
+  }
 
+  try {
+    const charRef = firebaseDb.collection("characters").doc(character.id);
+
+    await charRef.set({
+      ...character,
+      ownerUid: currentUser.uid,
+      ownerEmail: currentUser.email,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+
+    console.log("Ficha salva no Firebase com sucesso!");
+  } catch (error) {
+    console.error("Erro ao salvar ficha no Firebase:", error);
+    alert("Erro ao salvar a ficha na nuvem. Salvando apenas localmente.");
+  }
+}
     function saveScenes() {
       localStorage.setItem('mesarpg_scenes', JSON.stringify(scenes));
     }
