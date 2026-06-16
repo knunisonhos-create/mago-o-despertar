@@ -6109,50 +6109,50 @@ async function loadAllCharactersFromFirestore() {
     }
 
     function rollDice() {
-        const numDice = parseInt(document.getElementById('numDice').value);
-        const container = document.getElementById('diceContainer');
-        container.innerHTML = '';
+  const numDice = parseInt(document.getElementById('numDice').value);
+  const container = document.getElementById('diceContainer');
+  if (!container) return;
 
-        playRollSound();
+  container.innerHTML = '';
 
-        for (let i = 0; i < numDice; i++) {
-            const finalRoll = Math.floor(Math.random() * 10) + 1;
+  const results = [];
+  let total = 0;
 
-            const wrapper = document.createElement('div');
-            wrapper.className = 'die-wrapper flex flex-col items-center bg-zinc-950 border border-zinc-700 rounded-2xl p-4 transition-all';
+  // Gera os resultados
+  for (let i = 0; i < numDice; i++) {
+    const finalRoll = Math.floor(Math.random() * 10) + 1;
+    results.push(finalRoll);
+    total += finalRoll;
 
-            const img = document.createElement('img');
-            img.className = 'die w-20 h-20 rounded-xl border-2 border-[#6b21a8] shadow-lg';
-            img.src = diceImages[Math.floor(Math.random() * 10)];
+    // Cria visual do dado (mesmo código anterior)
+    const wrapper = document.createElement('div');
+    wrapper.className = 'die-wrapper flex flex-col items-center bg-zinc-950 border border-zinc-700 rounded-2xl p-4 transition-all';
 
-            wrapper.appendChild(img);
-            container.appendChild(wrapper);
+    const img = document.createElement('img');
+    img.className = 'die w-20 h-20 rounded-xl border-2 border-[#6b21a8] shadow-lg';
+    img.src = diceImages[finalRoll - 1];
 
-            let count = 0;
-            const interval = setInterval(() => {
-                count++;
-                img.src = diceImages[Math.floor(Math.random() * 10)];
+    wrapper.appendChild(img);
+    container.appendChild(wrapper);
 
-                if (count >= 12) {
-                    clearInterval(interval);
-                    img.src = diceImages[finalRoll - 1];
+    const value = document.createElement('div');
+    value.className = 'mt-3 text-2xl font-bold text-white px-4 py-1 rounded-full bg-zinc-800';
+    value.textContent = finalRoll;
+    wrapper.appendChild(value);
 
-                    const value = document.createElement('div');
-                    value.className = 'mt-3 text-2xl font-bold text-white px-4 py-1 rounded-full bg-zinc-800';
-                    value.textContent = finalRoll;
-                    wrapper.appendChild(value);
+    // Destaques visuais
+    if (finalRoll === 1) {
+      wrapper.classList.add('!border-red-900', '!bg-zinc-950');
+    } else if (finalRoll === 10) {
+      wrapper.classList.add('!border-yellow-400', '!shadow-[0_0_25px_#fde047]');
+    } else if (finalRoll === 8 || finalRoll === 9) {
+      wrapper.classList.add('!border-amber-400');
+    }
+  }
 
-                    // Destaques
-                    if (finalRoll === 1) {
-                        wrapper.classList.add('!border-red-900', '!bg-zinc-950');
-                    } else if (finalRoll === 10) {
-                        wrapper.classList.add('!border-yellow-400', '!shadow-[0_0_25px_#fde047]');
-                    } else if (finalRoll === 8 || finalRoll === 9) {
-                        wrapper.classList.add('!border-amber-400');
-                    }
-                }
-            }, 65);
-        }
+  // === NOVO: Salva a rolagem no Firebase ===
+  saveRollToFirestore(numDice, results, total);
+}
     }
 </script>
 </body>
