@@ -2219,27 +2219,25 @@ async function saveCharacterToFirestore(character) {
       return allCharacters.find(c => c.id === id);
     }
 
-    function saveCurrentCharacter(updates = {}) {
-      if (!selectedCharacterId) return;
+  function saveCurrentCharacter(updates = {}) {
+  if (!selectedCharacterId) return;
 
-      const idx = allCharacters.findIndex(c => c.id === selectedCharacterId);
-      if (idx === -1) return;
+  const idx = allCharacters.findIndex(c => c.id === selectedCharacterId);
+  if (idx === -1) return;
 
-      // merge updates into data
-      const char = allCharacters[idx];
-      Object.assign(char, updates);
-      char.updatedAt = Date.now();
+  const char = allCharacters[idx];
+  Object.assign(char, updates);
+  char.updatedAt = Date.now();
 
-      saveAllCharacters();
+  saveAllCharacters(); // mantém salvamento local
 
-      // If Firebase later: sync this character doc
-      if (isFirebaseEnabled) {
-        // firebaseSaveCharacter(currentRoom, char);
-      }
+  // Salva também no Firebase
+  saveCharacterToFirestore(char);
 
-      renderCharacterTabsIfMaster();
-      showToast('Ficha salva!', 1200);
-    }
+  // Atualiza interface do Mestre (se for o caso)
+  renderCharacterTabsIfMaster();
+  showToast('Ficha salva!', 1200);
+}
 
     function createNewCharacter(forPlayer = null) {
       const newChar = createEmptyMageCharacter(forPlayer);
