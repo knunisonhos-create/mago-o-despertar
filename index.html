@@ -1789,34 +1789,31 @@
       document.getElementById('register-form').classList.remove('hidden');
     }
 
-    async function login() {
-      const email = document.getElementById('login-email').value.trim();
-      const pass = document.getElementById('login-password').value;
+   async function login() {
+  if (!isFirebaseEnabled || !firebaseAuth) {
+    alert("Firebase não está configurado corretamente.");
+    return;
+  }
 
-      if (!email) {
-        alert('Informe um email');
-        return;
-      }
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    
+    // Abre popup para login com Google
+    const result = await firebaseAuth.signInWithPopup(provider);
+    
+    currentUser = {
+      uid: result.user.uid,
+      email: result.user.email,
+      displayName: result.user.displayName || result.user.email.split('@')[0]
+    };
 
-      if (isFirebaseEnabled && firebaseAuth) {
-        try {
-          const cred = await firebaseAuth.signInWithEmailAndPassword(email, pass);
-          currentUser = {
-            uid: cred.user.uid,
-            email: cred.user.email,
-            displayName: cred.user.displayName || cred.user.email.split('@')[0]
-          };
-          enterApp();
-        } catch (err) {
-          alert('Erro no login Firebase: ' + err.message);
-          // fallback demo
-          demoLogin(email);
-        }
-      } else {
-        demoLogin(email);
-      }
-    }
+    enterApp();
 
+  } catch (error) {
+    console.error("Erro no login com Google:", error);
+    alert("Erro ao fazer login com Google: " + error.message);
+  }
+}
     async function register() {
       const name = document.getElementById('reg-name').value.trim() || 'Jogador';
       const email = document.getElementById('reg-email').value.trim();
