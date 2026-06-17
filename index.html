@@ -971,26 +971,33 @@
       } catch { onlinePresence = {}; }
     }
 async function saveCharacterToFirestore(character) {
-  if (!isFirebaseEnabled || !firebaseDb || !currentUser) {
-    console.log("Firebase não disponível. Salvando apenas localmente.");
-    return;
-  }
+    if (!isFirebaseEnabled || !firebaseDb || !currentUser) {
+        console.log("Firebase não disponível.");
+        return;
+    }
 
-  try {
-    const charRef = firebaseDb.collection("characters").doc(character.id);
+    try {
+        const charRef = firebaseDb.collection("characters").doc(character.id);
 
-    await charRef.set({
-      ...character,
-      ownerUid: currentUser.uid,
-      ownerEmail: currentUser.email,
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
+        // Prepara os dados para salvar
+        const dataToSave = {
+            ...character,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
 
-    console.log("Ficha salva no Firebase com sucesso!");
-  } catch (error) {
-    console.error("Erro ao salvar ficha no Firebase:", error);
-    alert("Erro ao salvar a ficha na nuvem. Salvando apenas localmente.");
-  }
+        // Só define o dono se ainda não existir (evita o Mestre roubar a ficha)
+        if (!character.ownerUid) {
+            dataToSave.ownerUid = currentUser.uid;
+            dataToSave.ownerEmail = currentUser.email;
+        }
+
+        await charRef.set(dataToSave, { merge: true });
+
+        console.log("Ficha salva no Firebase com sucesso!");
+
+    } catch (error) {
+        console.error("Erro ao salvar ficha no Firebase:", error);
+    }
 }
     function saveScenes() {
       localStorage.setItem('mesarpg_scenes', JSON.stringify(scenes));
