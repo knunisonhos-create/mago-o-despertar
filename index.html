@@ -1458,25 +1458,42 @@ async function saveCharacterToFirestore(character) {
       renderSceneList();
     }
 async function saveRollToFirestore(numDice, results, total) {
-  if (!isFirebaseEnabled || !firebaseDb || !currentUser) {
-    console.log("Firebase não disponível. Rolagem só local.");
-    return;
-  }
+    if (!isFirebaseEnabled || !firebaseDb || !currentUser) {
+        console.log("Firebase não disponível.");
+        return;
+    }
 
-  try {
-    await firebaseDb.collection("rolls").add({
-      userId: currentUser.uid,
-      userName: currentUser.displayName || currentUser.email,
-      numDice: numDice,
-      results: results,           // array com os números rolados
-      total: total,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    });
+    try {
+        // 1. Salva a nova rolagem
+        await firebaseDb.collection("rolls").add({
+            userId: currentUser.uid,
+            userName: currentUser.displayName || currentUser.email,
+            numDice: numDice,
+            results: results,
+            total: total,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
 
-    console.log("Rolagem enviada para o Firebase.");
-  } catch (error) {
-    console.error("Erro ao salvar rolagem:", error);
-  }
+        // 2. Limpa registros antigos (mantém apenas os 5 mais recentes)
+        const snapshot = await firebaseDb.collection("rolls")
+            .orderBy("timestamp", "desc")
+            .get();
+
+        if (snapshot.size > 5) {
+            const docsToDelete = snapshot.docs.slice(5); // Pega a partir do 6º documento
+
+            const batch = firebaseDb.batch();
+            docsToDelete.forEach(doc => {
+                batch.delete(doc.ref);
+            });
+
+            await batch.commit();
+            console.log(`${docsToDelete.length} rolagens antigas foram apagadas.`);
+        }
+
+    } catch (error) {
+        console.error("Erro ao salvar/apagar rolagens:", error);
+    }
 }
     function getSceneBackgroundId(scene) {
       if (scene.backgroundId) return scene.backgroundId;
