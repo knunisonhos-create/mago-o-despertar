@@ -12,48 +12,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <style>
-
-    /* === ATRIBUTOS E PERÍCIAS - LAYOUT RESPONSIVO === */
-.mage-attr-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    gap: 12px;
-}
-
-.mage-attr-row .attr-name {
-    flex: 1;
-    font-size: calc(14px * 1.75);
-    line-height: 1.3;
-    color: #2c2118;
-}
-
-.mage-attr-row .dots {
-    display: flex;
-    gap: 6px;
-    flex-shrink: 0;
-}
-
-/* === MOBILE === */
-@media (max-width: 640px) {
-    .mage-attr-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
-    }
-
-    .mage-attr-row .attr-name {
-        width: 100%;
-        margin-bottom: 2px;
-    }
-
-    .mage-attr-row .dots {
-        width: 100%;
-        justify-content: flex-start;
-        padding-left: 4px;
-    }
-}
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=UnifrakturCook:wght@700&amp;display=swap');
     
     :root {
@@ -2638,112 +2596,30 @@ function listenToLatestRolls() {
             </div>
           </div>
 
-         <!-- ========== ATRIBUTOS ========== -->
-<div class="mage-section">
-    <div class="mage-section-title">ATRIBUTOS</div>
-
-    <!-- Mentais -->
-    <div class="mage-attr-row">
-        <span class="attr-name">Inteligência</span>
-        <div class="dots">
-            <div class="mage-dot filled"></div>
-            <div class="mage-dot filled"></div>
-            <div class="mage-dot filled"></div>
-            <div class="mage-dot"></div>
-            <div class="mage-dot"></div>
-        </div>
-    </div>
-
-    <div class="mage-attr-row">
-        <span class="attr-name">Raciocínio</span>
-        <div class="dots">
-            <div class="mage-dot filled"></div>
-            <div class="mage-dot filled"></div>
-            <div class="mage-dot"></div>
-            <div class="mage-dot"></div>
-            <div class="mage-dot"></div>
-        </div>
-    </div>
-
-    <div class="mage-attr-row">
-        <span class="attr-name">Determinação</span>
-        <div class="dots">
-            <div class="mage-dot filled"></div>
-            <div class="mage-dot filled"></div>
-            <div class="mage-dot"></div>
-            <div class="mage-dot"></div>
-            <div class="mage-dot"></div>
-        </div>
-    </div>
-
-    <!-- Físicos -->
-    <div class="mage-attr-row">
-        <span class="attr-name">Força</span>
-        <div class="dots">
-            <div class="mage-dot filled"></div>
-            <div class="mage-dot filled"></div>
-            <div class="mage-dot"></div>
-            <div class="mage-dot"></div>
-            <div class="mage-dot"></div>
-        </div>
-    </div>
-
-    <div class="mage-attr-row">
-        <span class="attr-name">Destreza</span>
-        <div class="dots">
-            <div class="mage-dot filled"></div>
-            <div class="mage-dot filled"></div>
-            <div class="mage-dot"></div>
-            <div class="mage-dot"></div>
-            <div class="mage-dot"></div>
-        </div>
-    </div>
-
-    <div class="mage-attr-row">
-        <span class="attr-name">Vigor</span>
-        <div class="dots">
-            <div class="mage-dot filled"></div>
-            <div class="mage-dot filled"></div>
-            <div class="mage-dot"></div>
-            <div class="mage-dot"></div>
-            <div class="mage-dot"></div>
-        </div>
-    </div>
-
-    <!-- Sociais -->
-    <div class="mage-attr-row">
-        <span class="attr-name">Presença</span>
-        <div class="dots">
-            <div class="mage-dot filled"></div>
-            <div class="mage-dot"></div>
-            <div class="mage-dot"></div>
-            <div class="mage-dot"></div>
-            <div class="mage-dot"></div>
-        </div>
-    </div>
-
-    <div class="mage-attr-row">
-        <span class="attr-name">Manipulação</span>
-        <div class="dots">
-            <div class="mage-dot filled"></div>
-            <div class="mage-dot filled"></div>
-            <div class="mage-dot"></div>
-            <div class="mage-dot"></div>
-            <div class="mage-dot"></div>
-        </div>
-    </div>
-
-    <div class="mage-attr-row">
-        <span class="attr-name">Autocontrole</span>
-        <div class="dots">
-            <div class="mage-dot filled"></div>
-            <div class="mage-dot filled"></div>
-            <div class="mage-dot"></div>
-            <div class="mage-dot"></div>
-            <div class="mage-dot"></div>
-        </div>
-    </div>
-</div>
+          <!-- ATRIBUTOS -->
+          <div class="mage-section">
+            <div class="mage-section-title">ATRIBUTOS</div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-2">
+              <div>
+                <div class="font-semibold text-sm mb-1 text-[#5c4633]">Mentais</div>
+                ${renderFichaAttributeRow('Inteligência', 'intelligence', char.attributes)}
+                ${renderFichaAttributeRow('Raciocínio', 'wits', char.attributes)}
+                ${renderFichaAttributeRow('Determinação', 'resolve', char.attributes)}
+              </div>
+              <div>
+                <div class="font-semibold text-sm mb-1 text-[#5c4633]">Físicos</div>
+                ${renderFichaAttributeRow('Força', 'strength', char.attributes)}
+                ${renderFichaAttributeRow('Destreza', 'dexterity', char.attributes)}
+                ${renderFichaAttributeRow('Vigor', 'stamina', char.attributes)}
+              </div>
+              <div>
+                <div class="font-semibold text-sm mb-1 text-[#5c4633]">Sociais</div>
+                ${renderFichaAttributeRow('Presença', 'presence', char.attributes)}
+                ${renderFichaAttributeRow('Manipulação', 'manipulation', char.attributes)}
+                ${renderFichaAttributeRow('Autocontrole', 'composure', char.attributes)}
+              </div>
+            </div>
+          </div>
 
           <!-- PERÍCIAS (bolinhas lado a lado + clique em preenchida apaga) -->
           <div class="mage-section">
