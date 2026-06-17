@@ -2596,30 +2596,112 @@ function listenToLatestRolls() {
             </div>
           </div>
 
-          <!-- ATRIBUTOS -->
-          <div class="mage-section">
-            <div class="mage-section-title">ATRIBUTOS</div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-2">
-              <div>
-                <div class="font-semibold text-sm mb-1 text-[#5c4633]">Mentais</div>
-                ${renderFichaAttributeRow('Inteligência', 'intelligence', char.attributes)}
-                ${renderFichaAttributeRow('Raciocínio', 'wits', char.attributes)}
-                ${renderFichaAttributeRow('Determinação', 'resolve', char.attributes)}
-              </div>
-              <div>
-                <div class="font-semibold text-sm mb-1 text-[#5c4633]">Físicos</div>
-                ${renderFichaAttributeRow('Força', 'strength', char.attributes)}
-                ${renderFichaAttributeRow('Destreza', 'dexterity', char.attributes)}
-                ${renderFichaAttributeRow('Vigor', 'stamina', char.attributes)}
-              </div>
-              <div>
-                <div class="font-semibold text-sm mb-1 text-[#5c4633]">Sociais</div>
-                ${renderFichaAttributeRow('Presença', 'presence', char.attributes)}
-                ${renderFichaAttributeRow('Manipulação', 'manipulation', char.attributes)}
-                ${renderFichaAttributeRow('Autocontrole', 'composure', char.attributes)}
-              </div>
-            </div>
-          </div>
+         <!-- ========== ATRIBUTOS ========== -->
+<div class="mage-section">
+    <div class="mage-section-title">ATRIBUTOS</div>
+
+    <!-- Mentais -->
+    <div class="mage-attr-row">
+        <span class="attr-name">Inteligência</span>
+        <div class="dots">
+            <div class="mage-dot filled"></div>
+            <div class="mage-dot filled"></div>
+            <div class="mage-dot filled"></div>
+            <div class="mage-dot"></div>
+            <div class="mage-dot"></div>
+        </div>
+    </div>
+
+    <div class="mage-attr-row">
+        <span class="attr-name">Raciocínio</span>
+        <div class="dots">
+            <div class="mage-dot filled"></div>
+            <div class="mage-dot filled"></div>
+            <div class="mage-dot"></div>
+            <div class="mage-dot"></div>
+            <div class="mage-dot"></div>
+        </div>
+    </div>
+
+    <div class="mage-attr-row">
+        <span class="attr-name">Determinação</span>
+        <div class="dots">
+            <div class="mage-dot filled"></div>
+            <div class="mage-dot filled"></div>
+            <div class="mage-dot"></div>
+            <div class="mage-dot"></div>
+            <div class="mage-dot"></div>
+        </div>
+    </div>
+
+    <!-- Físicos -->
+    <div class="mage-attr-row">
+        <span class="attr-name">Força</span>
+        <div class="dots">
+            <div class="mage-dot filled"></div>
+            <div class="mage-dot filled"></div>
+            <div class="mage-dot"></div>
+            <div class="mage-dot"></div>
+            <div class="mage-dot"></div>
+        </div>
+    </div>
+
+    <div class="mage-attr-row">
+        <span class="attr-name">Destreza</span>
+        <div class="dots">
+            <div class="mage-dot filled"></div>
+            <div class="mage-dot filled"></div>
+            <div class="mage-dot"></div>
+            <div class="mage-dot"></div>
+            <div class="mage-dot"></div>
+        </div>
+    </div>
+
+    <div class="mage-attr-row">
+        <span class="attr-name">Vigor</span>
+        <div class="dots">
+            <div class="mage-dot filled"></div>
+            <div class="mage-dot filled"></div>
+            <div class="mage-dot"></div>
+            <div class="mage-dot"></div>
+            <div class="mage-dot"></div>
+        </div>
+    </div>
+
+    <!-- Sociais -->
+    <div class="mage-attr-row">
+        <span class="attr-name">Presença</span>
+        <div class="dots">
+            <div class="mage-dot filled"></div>
+            <div class="mage-dot"></div>
+            <div class="mage-dot"></div>
+            <div class="mage-dot"></div>
+            <div class="mage-dot"></div>
+        </div>
+    </div>
+
+    <div class="mage-attr-row">
+        <span class="attr-name">Manipulação</span>
+        <div class="dots">
+            <div class="mage-dot filled"></div>
+            <div class="mage-dot filled"></div>
+            <div class="mage-dot"></div>
+            <div class="mage-dot"></div>
+            <div class="mage-dot"></div>
+        </div>
+    </div>
+
+    <div class="mage-attr-row">
+        <span class="attr-name">Autocontrole</span>
+        <div class="dots">
+            <div class="mage-dot filled"></div>
+            <div class="mage-dot filled"></div>
+            <div class="mage-dot"></div>
+            <div class="mage-dot"></div>
+            <div class="mage-dot"></div>
+        </div>
+    </div>
+</div>
 
           <!-- PERÍCIAS (bolinhas lado a lado + clique em preenchida apaga) -->
           <div class="mage-section">
