@@ -1542,6 +1542,34 @@ function listenToLatestRolls() {
             });
         });
 }
+
+    async function loadMyCharactersFromFirestore() {
+    if (!isFirebaseEnabled || !firebaseDb || !currentUser) {
+        console.log("Firebase não disponível ou usuário não logado.");
+        return;
+    }
+
+    try {
+        const snapshot = await firebaseDb.collection("characters")
+            .where("ownerUid", "==", currentUser.uid)
+            .get();
+
+        allCharacters = [];
+
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            allCharacters.push({
+                id: doc.id,
+                ...data
+            });
+        });
+
+        console.log(`${allCharacters.length} fichas do jogador carregadas do Firebase.`);
+
+    } catch (error) {
+        console.error("Erro ao carregar fichas do jogador do Firebase:", error);
+    }
+}
     function getSceneZoom(scene) {
       return scene && scene.zoom ? scene.zoom : 1;
     }
@@ -2022,37 +2050,37 @@ function listenToLatestRolls() {
     }
 
    function selectRole(role) {
-  currentRole = role;
-  const chooser = document.getElementById('role-chooser');
-  if (chooser) chooser.style.display = 'none';
+    currentRole = role;
+    const chooser = document.getElementById('role-chooser');
+    if (chooser) chooser.style.display = 'none';
 
-  updateHeaderRole();
+    updateHeaderRole();
 
-  if (role === 'mestre') {
-    // Mestre carrega TODAS as fichas do Firebase
-    loadAllCharactersFromFirestore().then(() => {
-      console.log("Total de fichas carregadas para o Mestre:", allCharacters.length);
-      renderFichaView();
-    });
-  } else {
-    // Jogador carrega normalmente
-    loadAllCharacters();
-    renderFichaView();
+    if (role === 'mestre') {
+        // Mestre carrega TODAS as fichas
+        loadAllCharactersFromFirestore().then(() => {
+            renderFichaView();
+        });
+    } else {
+        // Jogador carrega apenas AS SUAS fichas do Firebase
+        loadMyCharactersFromFirestore().then(() => {
+            renderFichaView();
 
-    // Auto-seleciona a ficha mais recente do jogador
-    if (!selectedCharacterId) {
-      const myChars = getMyCharacters();
-      if (myChars.length > 0) {
-        myChars.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-        selectedCharacterId = myChars[0].id;
-      }
+            // Auto-seleciona a ficha mais recente do jogador
+            if (!selectedCharacterId) {
+                const myChars = getMyCharacters();
+                if (myChars.length > 0) {
+                    myChars.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+                    selectedCharacterId = myChars[0].id;
+                }
+            }
+        });
     }
-  }
 
-  switchTab('ficha');
+    switchTab('ficha');
 
-  const roleLabel = role === 'mestre' ? 'Mestre' : 'Jogador';
-  showToast(`Entrou como ${roleLabel}.`, 3000);
+    const roleLabel = role === 'mestre' ? 'Mestre' : 'Jogador';
+    showToast(`Entrou como ${roleLabel}.`, 3000);
 }
 
     function updateHeaderRole() {
