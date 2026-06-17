@@ -12,6 +12,48 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <style>
+
+    /* === ATRIBUTOS E PERÍCIAS - LAYOUT RESPONSIVO === */
+.mage-attr-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 12px;
+}
+
+.mage-attr-row .attr-name {
+    flex: 1;
+    font-size: calc(14px * 1.75);
+    line-height: 1.3;
+    color: #2c2118;
+}
+
+.mage-attr-row .dots {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+/* === MOBILE === */
+@media (max-width: 640px) {
+    .mage-attr-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .mage-attr-row .attr-name {
+        width: 100%;
+        margin-bottom: 2px;
+    }
+
+    .mage-attr-row .dots {
+        width: 100%;
+        justify-content: flex-start;
+        padding-left: 4px;
+    }
+}
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=UnifrakturCook:wght@700&amp;display=swap');
     
     :root {
