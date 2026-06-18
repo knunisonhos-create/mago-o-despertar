@@ -2627,7 +2627,7 @@ function listenToLatestRolls() {
                 <div class="font-semibold text-sm mb-1 text-[#5c4633]">Mentais</div>
                 ${renderFichaAttributeRow('Inteligência', 'intelligence', char.attributes)}
                 ${renderFichaAttributeRow('Raciocínio', 'wits', char.attributes)}
-                ${renderFichaAttributeRow('Determinação', 'resolve', char.attributes)}
+                ${renderFichaAttributeRow('Perseverança', 'resolve', char.attributes)}
               </div>
               <div>
                 <div class="font-semibold text-sm mb-1 text-[#5c4633]">Físicos</div>
@@ -2664,15 +2664,15 @@ function listenToLatestRolls() {
                 ${renderSkillRow('Atletismo', 'athletics', char.skills)}
                 ${renderSkillRow('Briga', 'brawl', char.skills)}
                 ${renderSkillRow('Direção', 'drive', char.skills)}
-                ${renderSkillRow('Armas de Fogo', 'firearms', char.skills)}
+                ${renderSkillRow('Arm.Fogo', 'firearms', char.skills)}
                 ${renderSkillRow('Furto', 'larceny', char.skills)}
                 ${renderSkillRow('Furtividade', 'stealth', char.skills)}
                 ${renderSkillRow('Sobrevivência', 'survival', char.skills)}
-                ${renderSkillRow('Armas Brancas', 'weaponry', char.skills)}
+                ${renderSkillRow('Arm.Brancas', 'weaponry', char.skills)}
               </div>
               <div>
                 <div class="font-semibold text-sm mb-1 text-[#5c4633]">Sociais</div>
-                ${renderSkillRow('Lídar c/ Animais', 'animalKen', char.skills)}
+                ${renderSkillRow('L/Animais', 'animalKen', char.skills)}
                 ${renderSkillRow('Empatia', 'empathy', char.skills)}
                 ${renderSkillRow('Expressão', 'expression', char.skills)}
                 ${renderSkillRow('Intimidação', 'intimidation', char.skills)}
@@ -2697,7 +2697,7 @@ function listenToLatestRolls() {
               </div>
             </div>
             <div>
-              <div class="mage-section-title">ESPECIALIZAÇÕES (Pasivas)</div>
+              <div class="mage-section-title">ESPECIALIZAÇÕES </div>
               <textarea class="w-full h-20 bg-white border border-[#5c4633] p-2 text-sm resize-y" oninput="updateCharField('specializations', this.value)">${char.specializations || ''}</textarea>
             </div>
 
@@ -2747,7 +2747,7 @@ function listenToLatestRolls() {
 
                   <!-- Saúde (movido um pouco mais para baixo conforme solicitado) -->
                   <div>
-                    <div class="font-semibold mb-1 text-base">Saúde (10 quadrados — clique: vazio → / → X → *)</div>
+                    <div class="font-semibold mb-1 text-base">Saúde </div>
                     <div class="flex flex-nowrap gap-3" id="health-columns">
                       ${createHealthWithDots(char.healthStates || [], char.healthDots || [])}
                     </div>
