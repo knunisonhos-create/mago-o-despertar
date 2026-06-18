@@ -364,7 +364,7 @@
           <i class="fa-solid fa-dice-d20 text-5xl text-violet-400"></i>
           <h1 class="fantasy-title text-5xl font-bold tracking-tighter">MesaRPG</h1>
         </div>
-        <p class="text-zinc-400">Tabuleiro virtual • Fichas compartilhadas • Tempo real</p>
+        <p class="text-zinc-400">Mago o despertar 2 edição</p>
       </div>
 
      <h2 class="text-2xl font-semibold mb-6">Entrar na Mesa</h2>
@@ -385,10 +385,11 @@
           <div class="flex-1 h-px bg-zinc-700"></div>
         </div>
 
-        <button onclick="showRegister()" 
-                class="w-full py-3 border border-zinc-600 hover:bg-zinc-900 rounded-xl text-sm font-medium">
-          Criar nova conta
-        </button>
+       <button onclick="login()" 
+        class="w-full py-4 bg-white hover:bg-zinc-100 text-black font-bold rounded-2xl flex items-center justify-center gap-3 text-lg">
+  <i class="fa-brands fa-google text-2xl"></i>
+  <span>Entrar com Google</span>
+</button>
 
         <p class="text-center text-xs text-zinc-500 mt-6">
           Modo demo: use qualquer email/senha.<br>
@@ -396,39 +397,7 @@
         </p>
       </div>
 
-      <!-- Register -->
-      <div id="register-form" class="rpg-card rounded-2xl p-8 shadow-2xl hidden">
-        <h2 class="text-2xl font-semibold mb-6">Criar Conta</h2>
-        
-        <div class="space-y-4">
-          <div>
-            <label class="text-sm text-zinc-400 block mb-1.5">Nome do Jogador</label>
-            <input id="reg-name" type="text" value="Adeni" 
-                   class="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-3">
-          </div>
-          <div>
-            <label class="text-sm text-zinc-400 block mb-1.5">Email</label>
-            <input id="reg-email" type="email" value="novo@exemplo.com" 
-                   class="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-3">
-          </div>
-          <div>
-            <label class="text-sm text-zinc-400 block mb-1.5">Senha</label>
-            <input id="reg-password" type="password" value="123456" 
-                   class="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-3">
-          </div>
-          
-          <button onclick="register()" 
-                  class="fantasy-btn w-full py-3.5 rounded-xl font-semibold text-white flex items-center justify-center gap-2">
-            <i class="fa-solid fa-user-plus"></i>
-            <span>Criar conta e entrar</span>
-          </button>
-        </div>
-
-        <button onclick="showLogin()" 
-                class="mt-4 w-full py-3 text-sm text-zinc-400 hover:text-zinc-200">
-          ← Já tenho uma conta
-        </button>
-      </div>
+     
     </div>
   </div>
 
