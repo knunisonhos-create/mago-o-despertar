@@ -2998,7 +2998,7 @@ function listenToLatestRolls() {
       const val = (attrs && attrs[key]) || 1;
       return `<div class="flex items-center justify-between mb-1 mage-attr-skill">
         <span class="whitespace-nowrap">${label}</span>
-        <span class="flex flex-nowrap gap-1 ml-4" data-attr="${key}">${createFichaDotRow(val, 5)}</span>
+       <span class="flex flex-nowrap gap-1 ml-auto" data-attr="${key}">${createFichaDotRow(val, 5)}</span>
       </div>`;
     }
 
